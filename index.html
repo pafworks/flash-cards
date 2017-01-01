@@ -39,6 +39,7 @@
         <div id="id-btn-row">
             <input type="file" id="input">
             <button id="id-import-file-btn">Load File</button>
+            <!-- <button id="id-prev-card-btn">Previous</button> -->
             <button id="id-next-card-btn">Next</button>
         </div>
         <div id="id-progress row">
@@ -118,6 +119,9 @@
                 }
                 $('#id-progress-table-row').html(td_list);
                 $('#id-card-div').html('Click "Next" to begin');
+                card_count = 0;
+                card_keys = all_cards[card_count][0];
+                card_content = all_cards[card_count][1];
 
 
             }
