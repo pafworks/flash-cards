@@ -94,25 +94,24 @@
 
             });
             function papa_complete(results, file){
-                console.log("results data" + results.data);
+                console.log("results data: " + results.data);
                 console.log("file " + file);
                 card_data = results.data;
                 all_cards = [];
                 var td_list = '';
+                card_keys = results.meta.fields;
                 for (var row in card_data){
-                    card_keys = [];
                     card_content = [];
 
                     for (var key in card_data[row]){
                         if(!card_data[row].hasOwnProperty(key)) continue;
-                        card_keys.push(key);
                         card_content.push(card_data[row][key]);
                     }
                     all_cards.push([card_keys, card_content]);
 
 
                 }
-                console.log("all cards " + all_cards);
+                console.log("keys " + card_keys);
                 var table_length = card_keys.length;
                 for (var td_index=0; td_index<table_length; td_index++){
                     td_list += '<td id="id-progress-table-item-' + td_index +'" class="progress-table-item">' + card_keys[td_index] + '</td>';
