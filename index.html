@@ -39,7 +39,7 @@
         <div id="id-btn-row">
             <input type="file" id="input">
             <button id="id-import-file-btn">Load File</button>
-            <!-- <button id="id-prev-card-btn">Previous</button> -->
+            <button id="id-prev-card-btn">Previous</button>
             <button id="id-next-card-btn">Next</button>
         </div>
         <div id="id-progress row">
@@ -68,15 +68,19 @@
             var card_keys = [];
             var card_content = [];
             var all_cards = [];
-            $("#id-next-card-btn").click( function(){
-                var prev_key = (key_value_count === 0 ? card_keys.length - 1 : key_value_count - 1);
 
+
+			function display(prev_key){
                 $('#id-progress-table-item-'+prev_key).removeClass('progress-table-item-selected');
                 $('#id-progress-table-item-'+key_value_count).addClass('progress-table-item-selected');
                 $('#id-card-header-div').html(card_keys[key_value_count]);
                 $('#id-card-div').html(card_content[key_value_count]);
+			}
+
+            $("#id-next-card-btn").click( function(){
+                var prev_key = key_value_count; 
+
                 key_value_count++;
-                console.log("card keys size " + card_keys.length);
                 if ( key_value_count >= card_keys.length){
                     card_count++;
                     key_value_count = 0;
@@ -86,44 +90,62 @@
                     card_keys = all_cards[card_count][0];
                     card_content = all_cards[card_count][1];
                 }
-                console.log("key_value_count " + key_value_count);
-                console.log("card_count " + card_count);
-                console.log("card data " + card_data[card_count]);
-                console.log("card keys " + card_keys[key_value_count]);
-                console.log("card content " + card_content[key_value_count]);
-
+				console.log("key value count " + key_value_count + " card count " + card_count);	
+				display(prev_key);
             });
+
+			$("#id-prev-card-btn").click( function(){
+				var prev_key = key_value_count;
+				key_value_count--;
+				if (key_value_count < 0){
+					card_count--;
+					key_value_count = card_keys.length - 1;
+					if (card_count < 0){
+						card_count = card_data.length - 1;
+					}
+                    card_keys = all_cards[card_count][0];
+                    card_content = all_cards[card_count][1];
+				}
+				console.log("key value count " + key_value_count + " card count " + card_count);	
+				display(prev_key);	
+			});
+
             function papa_complete(results, file){
-                console.log("results data" + results.data);
-                console.log("file " + file);
+                /* console.log("results data" + results.data); */
+                /* console.log("file " + file); */
                 card_data = results.data;
                 all_cards = [];
                 var td_list = '';
+				var first_time = true;
+				card_keys = [];
                 for (var row in card_data){
-                    card_keys = [];
                     card_content = [];
 
                     for (var key in card_data[row]){
                         if(!card_data[row].hasOwnProperty(key)) continue;
-                        card_keys.push(key);
-                        card_content.push(card_data[row][key]);
+						if (first_time){
+							card_keys.push(key)
+						};
+						card_content.push(card_data[row][key]);
                     }
                     all_cards.push([card_keys, card_content]);
+					first_time = false;
 
-
-                }
-                console.log("all cards " + all_cards);
-                var table_length = card_keys.length;
-                for (var td_index=0; td_index<table_length; td_index++){
-                    td_list += '<td id="id-progress-table-item-' + td_index +'" class="progress-table-item">' + card_keys[td_index] + '</td>';
-                }
-                $('#id-progress-table-row').html(td_list);
-                $('#id-card-div').html('Click "Next" to begin');
-                card_count = 0;
-                card_keys = all_cards[card_count][0];
-                card_content = all_cards[card_count][1];
-
-
+				}
+				/* console.log("all cards " + all_cards); */
+				var table_length = card_keys.length;
+				for (var td_index=0; td_index<table_length; td_index++){
+					td_list += '<td id="id-progress-table-item-' + td_index +'" class="progress-table-item">' + card_keys[td_index] + '</td>';
+				}
+				$('#id-progress-table-row').html(td_list);
+				$('#id-card-div').html('Click "Next" to begin');
+				card_count = 0;
+				key_value_count = 0;
+				card_keys = all_cards[card_count][0];
+				card_content = all_cards[card_count][1];
+                var prev_key = (key_value_count === 0 ? card_keys.length - 1 : key_value_count - 1);
+				console.log("key value count " + key_value_count + " card count " + card_count);	
+				display(prev_key);
             }
             var papa_config = {
                 complete: papa_complete,
@@ -131,7 +153,7 @@
             };
             $("#id-import-file-btn").click( function(){
                 var selectedFile = document.getElementById('input').files[0];
-                console.log("selected file " + selectedFile);
+                /* console.log("selected file " + selectedFile); */
                 Papa.parse(selectedFile, papa_config);
                 $('#id-card-header-div').html("File loaded.");
             });
