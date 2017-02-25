@@ -113,26 +113,22 @@
             function papa_complete(results, file){
                 /* console.log("results data" + results.data); */
                 /* console.log("file " + file); */
-                card_data = results.data;
                 all_cards = [];
                 var td_list = '';
-				var first_time = true;
-				card_keys = [];
+                card_keys = results.meta.fields;
+				card_data = results.data;
+				console.log(card_data);
                 for (var row in card_data){
                     card_content = [];
 
-                    for (var key in card_data[row]){
-                        if(!card_data[row].hasOwnProperty(key)) continue;
-						if (first_time){
-							card_keys.push(key)
-						};
-						card_content.push(card_data[row][key]);
+                    for (var key in card_keys){
+                        if(!card_data[row].hasOwnProperty(card_keys[key])) continue;
+                        card_content.push(card_data[row][card_keys[key]]);
                     }
                     all_cards.push([card_keys, card_content]);
 					first_time = false;
-
 				}
-				/* console.log("all cards " + all_cards); */
+				console.log("all cards " + all_cards);
 				var table_length = card_keys.length;
 				for (var td_index=0; td_index<table_length; td_index++){
 					td_list += '<td id="id-progress-table-item-' + td_index +'" class="progress-table-item">' + card_keys[td_index] + '</td>';
